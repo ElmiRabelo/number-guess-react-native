@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-import { View, Text, Button, StyleSheet } from "react-native";
+import React, { useState, useRef, useEffect } from "react";
+import { View, Text, Button, Alert, StyleSheet } from "react-native";
 
 import NumberContainer from "../components/NumberContainer";
 import Card from "../components/Card";
+import GameOver from "./GameOver";
 
 const generateRandomBetween = (min, max, exclude) => {
   min = Math.ceil(min);
@@ -16,18 +17,58 @@ const generateRandomBetween = (min, max, exclude) => {
   }
 };
 
-const GameScreen = ({ userGuess }) => {
+const GameScreen = ({ userGuess, onGameOver }) => {
   const [currentGuess, setCurrentGuess] = useState(
     generateRandomBetween(1, 100, userGuess)
   );
+  const [rounds, setRounds] = useState(0);
+
+  const currentLow = useRef(1);
+  const currentHigh = useRef(100);
+
+  useEffect(() => {
+    if (currentGuess === userGuess) {
+      onGameOver(rounds);
+    }
+  }, [currentGuess, userGuess, onGameOver]);
+
+  const nextGuessHandler = direction => {
+    //Verifica se a dica que o user está dando não esta incorreta, como tentativa de enganar o resultado.
+    if (
+      (direction === "lower" && currentGuess < userGuess) ||
+      (direction === "greater" && currentGuess > userGuess)
+    ) {
+      Alert.alert(
+        "Isso está incorreto!",
+        "Você sabe que essa opção está incorreta.",
+        [{ text: "Ok...", style: "cancel" }]
+      );
+      return;
+    }
+
+    //Cria limites de números, para menor e maior, baseado nas escolhas do user
+    if (direction === "lower") {
+      currentHigh.current = currentGuess;
+    } else {
+      currentLow.current = currentGuess;
+    }
+    // gera um novo palpite de número com os limites criados
+    const nextNumber = generateRandomBetween(
+      currentLow.current,
+      currentHigh.current,
+      currentGuess
+    );
+    setCurrentGuess(nextNumber);
+    setRounds(curRounds => curRounds + 1);
+  };
 
   return (
     <View style={styles.container}>
       <Text>Palpite do Oponent: </Text>
       <NumberContainer>{currentGuess}</NumberContainer>
       <Card style={styles.buttonContainer}>
-        <Button title="MENOR" />
-        <Button title="MAIOR" />
+        <Button title="MENOR" onPress={() => nextGuessHandler("lower")} />
+        <Button title="MAIOR" onPress={() => nextGuessHandler("greater")} />
       </Card>
     </View>
   );
