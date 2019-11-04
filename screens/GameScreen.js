@@ -1,9 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, Text, Button, Alert, StyleSheet } from "react-native";
+import { View, Text, Alert, ScrollView, StyleSheet } from "react-native";
+import { AntDesign } from "@expo/vector-icons";
 
 import NumberContainer from "../components/NumberContainer";
 import Card from "../components/Card";
-import GameOver from "./GameOver";
+import MainButton from "../components/MainButton";
+
+import colors from "../constants/colors";
+import globalStyles from "../constants/global-styles";
 
 const generateRandomBetween = (min, max, exclude) => {
   min = Math.ceil(min);
@@ -17,18 +21,28 @@ const generateRandomBetween = (min, max, exclude) => {
   }
 };
 
-const GameScreen = ({ userGuess, onGameOver }) => {
-  const [currentGuess, setCurrentGuess] = useState(
-    generateRandomBetween(1, 100, userGuess)
+const renderListItem = (value, indexValue) => {
+  return (
+    <View key={Math.random()} style={styles.listItem}>
+      <Text style={globalStyles.bodyText}>
+        {indexValue + 1}º Round:{" "}
+        <Text style={globalStyles.highlightText}>{value}</Text>
+      </Text>
+    </View>
   );
-  const [rounds, setRounds] = useState(0);
+};
+
+const GameScreen = ({ userGuess, onGameOver }) => {
+  const INITIAL_GUESS = generateRandomBetween(1, 100, userGuess);
+  const [currentGuess, setCurrentGuess] = useState(INITIAL_GUESS);
+  const [pastRounds, setPastRounds] = useState([INITIAL_GUESS]);
 
   const currentLow = useRef(1);
   const currentHigh = useRef(100);
 
   useEffect(() => {
     if (currentGuess === userGuess) {
-      onGameOver(rounds);
+      onGameOver(pastRounds.length);
     }
   }, [currentGuess, userGuess, onGameOver]);
 
@@ -50,7 +64,7 @@ const GameScreen = ({ userGuess, onGameOver }) => {
     if (direction === "lower") {
       currentHigh.current = currentGuess;
     } else {
-      currentLow.current = currentGuess;
+      currentLow.current = currentGuess + 1;
     }
     // gera um novo palpite de número com os limites criados
     const nextNumber = generateRandomBetween(
@@ -59,17 +73,28 @@ const GameScreen = ({ userGuess, onGameOver }) => {
       currentGuess
     );
     setCurrentGuess(nextNumber);
-    setRounds(curRounds => curRounds + 1);
+    setPastRounds(curPastRounds => [...curPastRounds, nextNumber]);
   };
 
   return (
     <View style={styles.container}>
-      <Text>Palpite do Oponent: </Text>
+      <Text style={globalStyles.bodyText}>Esse é seu número: </Text>
       <NumberContainer>{currentGuess}</NumberContainer>
       <Card style={styles.buttonContainer}>
-        <Button title="MENOR" onPress={() => nextGuessHandler("lower")} />
-        <Button title="MAIOR" onPress={() => nextGuessHandler("greater")} />
+        <MainButton
+          title={<AntDesign name="minus" size={24} color="white" />}
+          backgroundColor={colors.alternative}
+          onPress={() => nextGuessHandler("lower")}
+        />
+        <MainButton
+          title={<AntDesign name="plus" size={24} color="white" />}
+          backgroundColor={colors.alternative}
+          onPress={() => nextGuessHandler("greater")}
+        />
       </Card>
+      <ScrollView style={styles.listContainer}>
+        {pastRounds.map((round, index) => renderListItem(round, index))}
+      </ScrollView>
     </View>
   );
 };
@@ -86,6 +111,18 @@ const styles = StyleSheet.create({
     width: 300,
     maxWidth: "80%",
     marginTop: 20
+  },
+  listContainer: {
+    paddingTop: 15,
+    width: "100%"
+  },
+  listItem: {
+    width: "50%",
+    borderColor: colors.suplementar,
+    borderWidth: 1,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    marginVertical: 5
   }
 });
 

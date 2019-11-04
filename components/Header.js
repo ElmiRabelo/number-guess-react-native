@@ -1,11 +1,12 @@
 import React from "react";
 import { View, Text, StyleSheet, Platform } from "react-native";
 
+import globalStyles from "../constants/global-styles";
 import colors from "../constants/colors";
 
 const Header = ({ title }) => (
   <View style={styles.header}>
-    <Text style={styles.headerTitle}>{title}</Text>
+    <Text style={globalStyles.headerTitle}>{title}</Text>
   </View>
 );
 
@@ -17,13 +18,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     alignItems: "center",
     justifyContent: "center"
-  },
-  headerTitle: {
-    fontFamily: Platform.OS === "android" ? "Roboto" : "AvenirNext-Regular",
-    color: colors.white,
-    fontSize: 22,
-    letterSpacing: 2,
-    fontWeight: "bold"
   }
 });
 
