@@ -24,10 +24,8 @@ const generateRandomBetween = (min, max, exclude) => {
 const renderListItem = (value, indexValue) => {
   return (
     <View key={Math.random()} style={styles.listItem}>
-      <Text style={globalStyles.bodyText}>
-        {indexValue + 1}º Round:{" "}
-        <Text style={globalStyles.highlightText}>{value}</Text>
-      </Text>
+      <Text style={globalStyles.bodyText}>{indexValue + 1}º Round: </Text>
+      <Text style={globalStyles.highlightText}>{value}</Text>
     </View>
   );
 };
@@ -92,9 +90,11 @@ const GameScreen = ({ userGuess, onGameOver }) => {
           onPress={() => nextGuessHandler("greater")}
         />
       </Card>
-      <ScrollView style={styles.listContainer}>
-        {pastRounds.map((round, index) => renderListItem(round, index))}
-      </ScrollView>
+      <View style={styles.listContainer}>
+        <ScrollView contentContainerStyle={styles.list}>
+          {pastRounds.map((round, index) => renderListItem(round, index))}
+        </ScrollView>
+      </View>
     </View>
   );
 };
@@ -113,11 +113,17 @@ const styles = StyleSheet.create({
     marginTop: 20
   },
   listContainer: {
+    flex: 1,
     paddingTop: 15,
     width: "100%"
   },
+  list: {
+    alignItems: "center"
+  },
   listItem: {
     width: "50%",
+    flexDirection: "row",
+    justifyContent: "space-around",
     borderColor: colors.suplementar,
     borderWidth: 1,
     paddingVertical: 5,
