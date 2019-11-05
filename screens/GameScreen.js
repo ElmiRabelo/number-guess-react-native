@@ -1,5 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, Text, Alert, ScrollView, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Dimensions
+} from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 
 import NumberContainer from "../components/NumberContainer";
@@ -110,7 +117,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     width: 300,
     maxWidth: "80%",
-    marginTop: 20
+    marginTop: Dimensions.get("window").width > 600 ? 25 : 10
   },
   listContainer: {
     flex: 1,
@@ -121,12 +128,12 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   listItem: {
-    width: "50%",
+    width: Dimensions.get("window").width > 350 ? "40%" : "60%",
     flexDirection: "row",
     justifyContent: "space-around",
     borderColor: colors.suplementar,
     borderWidth: 1,
-    paddingVertical: 5,
+    paddingVertical: 15,
     paddingHorizontal: 10,
     marginVertical: 5
   }

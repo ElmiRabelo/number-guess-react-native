@@ -1,14 +1,15 @@
 import { StyleSheet } from "react-native";
 import colors from "./colors";
+import metrics from "./metrics";
 
 export default StyleSheet.create({
   bodyText: {
     fontFamily: "open-sans",
-    fontSize: 14
+    fontSize: metrics.height < 400 ? 15 : 17
   },
   resultText: {
     fontFamily: "open-sans",
-    fontSize: 16,
+    fontSize: metrics.height < 400 ? 16 : 20,
     marginVertical: 10
   },
   titleWhite: {

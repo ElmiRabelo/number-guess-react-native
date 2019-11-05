@@ -6,7 +6,8 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   Keyboard,
-  Alert
+  Alert,
+  KeyboardAvoidingView
 } from "react-native";
 //custom components e assets
 import Card from "../components/Card";
@@ -47,65 +48,75 @@ const StartGameScreen = props => {
 
   if (confirmed) {
     return (
-      <View style={styles.container}>
-        <Card style={styles.confirmedCard}>
-          <Text style={globalStyles.bodyText}>Número escolhido: </Text>
-          <NumberContainer>{selectedNumber}</NumberContainer>
-          <View style={styles.confimerdButton}>
-            <MainButton
-              title="Começar Jogo"
-              backgroundColor={colors.purple}
-              onPress={() => props.onStartGame(selectedNumber)}
-            />
-          </View>
-          <View style={styles.confimerdButton}>
-            <MainButton
-              title="Reiniciar"
-              backgroundColor={colors.dark}
-              onPress={resetInputHandler}
-            />
-          </View>
-        </Card>
-      </View>
+      <KeyboardAvoidingView behavior="padding" style={styles.avoidingView}>
+        <View style={styles.container}>
+          <Card style={styles.confirmedCard}>
+            <Text style={globalStyles.bodyText}>Número escolhido: </Text>
+            <NumberContainer>{selectedNumber}</NumberContainer>
+            <View style={styles.confimerdButton}>
+              <MainButton
+                title="Começar Jogo"
+                backgroundColor={colors.purple}
+                onPress={() => props.onStartGame(selectedNumber)}
+              />
+            </View>
+            <View style={styles.confimerdButton}>
+              <MainButton
+                title="Reiniciar"
+                backgroundColor={colors.dark}
+                onPress={resetInputHandler}
+              />
+            </View>
+          </Card>
+        </View>
+      </KeyboardAvoidingView>
     );
   }
 
   return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <View style={styles.container}>
-        <Text style={globalStyles.titleBlack}>Comece um Novo Jogo</Text>
-        <Card style={styles.inputContainer}>
-          <Text style={globalStyles.bodyText}>Escolha um Número</Text>
-          <Input
-            style={styles.input}
-            placeholder="Ex: 00"
-            blurOnSubmit
-            autoCorrect={false}
-            keyboardType="numeric"
-            maxLength={2}
-            onChangeText={numberInputHandler}
-            value={enteredValue}
-          />
+    <KeyboardAvoidingView
+      behavior="padding"
+      keyboardVerticalOffset={30}
+      style={styles.avoidingView}
+    >
+      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+        <View style={styles.container}>
+          <Text style={globalStyles.titleBlack}>Comece um Novo Jogo</Text>
+          <Card style={styles.inputContainer}>
+            <Text style={globalStyles.bodyText}>Escolha um Número</Text>
+            <Input
+              style={styles.input}
+              placeholder="Ex: 00"
+              blurOnSubmit
+              autoCorrect={false}
+              keyboardType="numeric"
+              maxLength={2}
+              onChangeText={numberInputHandler}
+              value={enteredValue}
+            />
 
-          <View style={styles.buttonContainer}>
-            <View sytle={styles.button}>
-              <MainButton
-                title="Recomeçar"
-                backgroundColor={colors.secondary}
-                onPress={resetInputHandler}
-              />
+            <View style={styles.buttonContainer}>
+              <View sytle={styles.button}>
+                <MainButton
+                  title="Recomeçar"
+                  backgroundColor={colors.secondary}
+                  borderRadius={3}
+                  onPress={resetInputHandler}
+                />
+              </View>
+              <View sytle={styles.button}>
+                <MainButton
+                  title="Confirmar"
+                  backgroundColor={colors.primary}
+                  borderRadius={3}
+                  onPress={confirmInputHandler}
+                />
+              </View>
             </View>
-            <View sytle={styles.button}>
-              <MainButton
-                title="Confirmar"
-                backgroundColor={colors.primary}
-                onPress={confirmInputHandler}
-              />
-            </View>
-          </View>
-        </Card>
-      </View>
-    </TouchableWithoutFeedback>
+          </Card>
+        </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -115,9 +126,13 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: "center"
   },
+  avoidingView: {
+    flex: 1
+  },
   inputContainer: {
-    width: 300,
-    maxWidth: "80%",
+    width: "80%",
+    maxWidth: "95%",
+    minWidth: 300,
     alignItems: "center"
   },
   buttonContainer: {
@@ -126,25 +141,27 @@ const styles = StyleSheet.create({
     justifyContent: "space-around"
   },
   button: {
-    width: "40%",
-    alignItems: "center"
+    width: "50%"
   },
   input: {
-    width: 50,
+    width: "25%",
+    minWidth: 55,
+    maxWidth: 80,
     padding: 5,
     marginVertical: 25,
     textAlign: "center"
   },
   confirmedCard: {
-    width: 200,
-    maxWidth: "60%",
+    width: "80%",
+    maxWidth: "90%",
+    minWidth: 300,
     alignItems: "center",
     marginTop: 15,
     backgroundColor: colors.suplementar
   },
   confimerdButton: {
     marginBottom: 10,
-    width: 150
+    width: "80%"
   }
 });
 
